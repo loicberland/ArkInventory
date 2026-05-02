@@ -2963,7 +2963,12 @@ function ArkInventory.MenuVaultTabOpen( frame )
 		local tab_id = frame.ARK_Data.tab_id
 		local cp = ArkInventory.LocationPlayerInfoGet( loc_id )
 		local tab = ArkInventory.db.account.cache.realm[cp.realm].faction[cp.faction].character[cp.name].location[loc_id].bag[bag_id]
+		local tab_name = tab and tab.name
 		local button = getfenv()[ArkInventory.Const.Frame.Main.Name .. loc_id .. ArkInventory.Const.Frame.Changer.Name .. "WindowBag" .. tab_id]
+
+		if tab_name == nil or tab_name == "" then
+			tab_name = string.format( ArkInventory.Localise["VAULT_TAB_NAME"], tab_id, UNKNOWN )
+		end
 
 		
 		local x, p, rp
@@ -2993,7 +2998,7 @@ function ArkInventory.MenuVaultTabOpen( frame )
 					ArkInventory.Lib.DewDrop:AddLine()
 					
 					ArkInventory.Lib.DewDrop:AddLine(
-						"text", string.upper( tab.name ),
+						"text", string.upper( tab_name ),
 						"isTitle", true,
 						"textHeight", 12
 					)
