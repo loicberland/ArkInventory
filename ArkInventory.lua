@@ -3156,10 +3156,13 @@ function ArkInventory.ScanVaultHeader( tab_id )
 	if tab_id <= GetNumGuildBankTabs() then
 		
 		local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals = GetGuildBankTabInfo( tab_id )
+		local tab_name = name
 
-		if name then
-			name = string.format( ArkInventory.Localise["VAULT_TAB_NAME"], tab_id, name )
+		if tab_name == nil or tab_name == "" then
+			tab_name = UNKNOWN
 		end
+
+		name = string.format( ArkInventory.Localise["VAULT_TAB_NAME"], tab_id, tab_name )
 		
 		local access -- sourced from Blizzard_GuildBankUI.lua - GuildBankFrame_UpdateTabs()
 		if not isViewable then
@@ -7044,7 +7047,7 @@ function ArkInventory.Frame_Changer_Vault_Tab_OnClick( frame, button )
 	local cp = ArkInventory.LocationPlayerInfoGet( loc_id )
 	local tab = ArkInventory.db.account.cache.realm[cp.realm].faction[cp.faction].character[cp.name].location[loc_id].bag[bag_id]
 	
-	if tab.name == nil then
+	if tab == nil then
 		return
 	end
 
