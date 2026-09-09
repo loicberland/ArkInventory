@@ -1,0 +1,8 @@
+## Interface: 20400
+## Title: ArkInventory - Global Rules
+## Notes: Partage les règles personnalisées ArkInventory entre tous les profils.
+## Author: Patch pour loicberland/ArkInventory
+## Version: 1.0.0
+## RequiredDeps: ArkInventory
+
+ArkInventory_GlobalRules.lua
