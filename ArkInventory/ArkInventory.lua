@@ -4887,10 +4887,10 @@ function ArkInventory.Frame_Main_Draw( frame )
 		
 		if ArkInventory.db.account.option.bugfix_alert_framelevel == 1 then
 			-- short
-			ArkInventory.PrintPlus( { RED_FONT_COLOR_CODE, ArkInventory.Localise["MISC_ALERT"], FONT_COLOR_CODE_CLOSE, " ", ArkInventory.Localise["MISC_BUGFIX_SHORT"] } )
+			--ArkInventory.PrintPlus( { RED_FONT_COLOR_CODE, ArkInventory.Localise["MISC_ALERT"], FONT_COLOR_CODE_CLOSE, " ", ArkInventory.Localise["MISC_BUGFIX_SHORT"] } )
 		elseif ArkInventory.db.account.option.bugfix_alert_framelevel == 2 then
 			-- long
-			ArkInventory.PrintPlus( { RED_FONT_COLOR_CODE, ArkInventory.Localise["MISC_ALERT"], FONT_COLOR_CODE_CLOSE, " ", ArkInventory.Localise["MISC_BUGFIX_SHORT"], "  ", string.format( ArkInventory.Localise["MISC_BUGFIX_LONG"], ArkInventory.Global.Location[loc_id].Name, level_old, level_new ) } )
+			--ArkInventory.PrintPlus( { RED_FONT_COLOR_CODE, ArkInventory.Localise["MISC_ALERT"], FONT_COLOR_CODE_CLOSE, " ", ArkInventory.Localise["MISC_BUGFIX_SHORT"], "  ", string.format( ArkInventory.Localise["MISC_BUGFIX_LONG"], ArkInventory.Global.Location[loc_id].Name, level_old, level_new ) } )
 		else
 			-- disabled
 		end
