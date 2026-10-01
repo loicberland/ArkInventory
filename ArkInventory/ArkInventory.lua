@@ -2085,23 +2085,31 @@ end
 
 function ArkInventory:EVENT_WOW_ITEM_LOCK_CHANGED()
 
-	--ArkInventory.PrintPlus( { RED_FONT_COLOR_CODE, "EVENT_WOW_ITEM_LOCK_CHANGED[", arg1, ",", arg2, "]" } )
+    local bag_id = arg1
+    local slot_id = arg2
 
-	if arg1 ~= nil and type( arg1 ) == "number" and arg2 ~= nil and type( arg2 ) == "number" then
-	
-		--ArkInventory.PrintPlus( { RED_FONT_COLOR_CODE, "EVENT_WOW_ITEM_LOCK_CHANGED[", arg1, ",", arg2, "] (processing)" } )
-	
-		-- bag/slot (item) locks
-		
-		local loc_id = ArkInventory.BagGetLocation( arg1 )
-		local framename = ArkInventory.ContainerItemNameGet( loc_id, arg1, arg2 )
-		if framename then
-			local frame = getfenv()[framename]
-			ArkInventory.Frame_Item_Update_Lock( frame )
-		end
+    if type(bag_id) ~= "number" or type(slot_id) ~= "number" then
+        return
+    end
 
-	end
-	
+    local loc_id = ArkInventory.BagGetLocation(bag_id)
+    if not loc_id then
+        return
+    end
+
+    local framename = ArkInventory.ContainerItemNameGet(
+        loc_id, bag_id, slot_id
+    )
+
+    if framename then
+        ArkInventory.Frame_Item_Update_Lock(getfenv()[framename])
+    end
+
+    -- Demande aussi une mise à jour du contenu du sac.
+    ArkInventory:TriggerEvent(
+        "EVENT_ARKINVENTORY_BAG_UPDATE_BUCKET", bag_id
+    )
+
 end
 
 
@@ -2777,6 +2785,9 @@ function ArkInventory.ScanBag( bag_id )
 	
 	ArkInventory.LocationCacheSetup( loc_id, cp )
 	
+	-- Les quantités peuvent avoir changé, y compris les piles supprimées.
+	ArkInventory.Global.Cache.ItemCount = {}
+
 	local bag = { }
 
 	bag["count"] = 0
