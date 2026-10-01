@@ -2716,7 +2716,8 @@ function ArkInventory.MenuItemOpen( frame )
 							ArkInventory.Lib.DewDrop:AddLine( "text", ArkInventory.Localise["MOD_MENU_ITEM_DEBUG_BAG_TYPE"] .. ": " .. GREEN_FONT_COLOR_CODE .. bagtype )
 						end
 						ArkInventory.Lib.DewDrop:AddLine()
-						ArkInventory.Lib.DewDrop:AddLine( "text", ArkInventory.Localise["MOD_MENU_ITEM_DEBUG_AI_ID"] .. ": " .. GREEN_FONT_COLOR_CODE .. i.id )
+						-- ArkInventory.Lib.DewDrop:AddLine( "text", ArkInventory.Localise["MOD_MENU_ITEM_DEBUG_AI_ID"] .. ": " .. GREEN_FONT_COLOR_CODE .. i.id )
+						ArkInventory.Lib.DewDrop:AddLine( "text", ArkInventory.Localise["MOD_MENU_ITEM_DEBUG_AI_ID"] .. ": " .. GREEN_FONT_COLOR_CODE .. tostring( i.id or "indisponible" ) )
 						ArkInventory.Lib.DewDrop:AddLine( "text", ArkInventory.Localise["MOD_MENU_ITEM_DEBUG_AI_CATEGORY"] .. ": " .. GREEN_FONT_COLOR_CODE .. category.data[1].id )
 			
 						if i.h then
