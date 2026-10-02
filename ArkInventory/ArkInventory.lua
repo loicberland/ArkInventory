@@ -1735,6 +1735,8 @@ function ArkInventory.OnEnable()
 	ArkInventory:RegisterBucketEvent( "EVENT_ARKINVENTORY_BAG_UPDATE_BUCKET", 0.5 )
 	
 	ArkInventory:RegisterEvent( "BAG_UPDATE", "EVENT_WOW_BAG_UPDATE" )
+	ArkInventory:RegisterEvent( "QUEST_LOG_UPDATE", "EVENT_WOW_QUEST_LOG_UPDATE" )
+	ArkInventory:RegisterEvent( "QUEST_FINISHED", "EVENT_WOW_QUEST_LOG_UPDATE" )
 	ArkInventory:RegisterEvent( "PLAYERBANKSLOTS_CHANGED", "EVENT_WOW_PLAYERBANKSLOTS_CHANGED" ) -- a bag_update event for the bank (-1)
 
 	ArkInventory:RegisterEvent( "PLAYERBANKBAGSLOTS_CHANGED", "EVENT_WOW_PLAYERBANKBAGSLOTS_CHANGED" ) -- triggered when you purchase a new bank bag slot
@@ -1786,6 +1788,44 @@ function ArkInventory.OnEnable()
 	
 	ArkInventory.PrintPlus( string.format( ArkInventory.Localise["MOD_ENABLED"], ArkInventory.Const.Program.UIVersion, "/ARKINV", "/AI" ) )
 	
+end
+
+function ArkInventory:EVENT_WOW_QUEST_LOG_UPDATE()
+
+    if not ArkInventory.QuestBagRefreshFrame then
+        ArkInventory.QuestBagRefreshFrame = CreateFrame("Frame")
+    end
+
+    local frame = ArkInventory.QuestBagRefreshFrame
+    frame.elapsed = 0
+    frame.firstScanDone = false
+
+    frame:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed = self.elapsed + elapsed
+
+        if (not self.firstScanDone and self.elapsed >= 0.5)
+            or self.elapsed >= 1.5 then
+
+            for bag_id = 0, NUM_BAG_SLOTS do
+                ArkInventory.ScanBag(bag_id)
+            end
+
+            ArkInventory.Frame_Main_Generate(
+                ArkInventory.Const.Location.Bag,
+                ArkInventory.Const.Window.Draw.Recalculate
+            )
+
+            self.firstScanDone = true
+
+            if self.elapsed >= 1.5 then
+                self:SetScript("OnUpdate", nil)
+                self:Hide()
+            end
+        end
+    end)
+
+    frame:Show()
+
 end
 
 function ArkInventory.OnDisable()
@@ -1849,13 +1889,23 @@ function ArkInventory:EVENT_ARKINVENTORY_BAG_UPDATE_BUCKET( arg1 )
 	
 end
 
-function ArkInventory:EVENT_WOW_BAG_UPDATE( arg1 )
-	
-	--ArkInventory.PrintPlus( { RED_FONT_COLOR_CODE, "EVENT_WOW_BAG_UPDATE( ", arg1, " )" } )
-	
-	ArkInventory.RestackResume()
+function ArkInventory:EVENT_WOW_BAG_UPDATE( bag_id )
 
-	ArkInventory:TriggerEvent( "EVENT_ARKINVENTORY_BAG_UPDATE_BUCKET", arg1 )
+    -- Conserve la mise à jour du sac signalé.
+    if ArkInventory.BagGetLocation( bag_id ) then
+        ArkInventory:TriggerEvent(
+            "EVENT_ARKINVENTORY_BAG_UPDATE_BUCKET", bag_id
+        )
+    end
+
+    -- Vérifie aussi les autres sacs contenant les composants consommés.
+    for b = 0, NUM_BAG_SLOTS do
+        ArkInventory:TriggerEvent(
+            "EVENT_ARKINVENTORY_BAG_UPDATE_BUCKET", b
+        )
+    end
+
+    ArkInventory.RestackResume()
 
 end
 
